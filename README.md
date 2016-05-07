@@ -134,10 +134,36 @@ You can also extend jQuery to add a function that does it all for you:
 
 ```javascript
 $.fn.extend({
-    animateCss: function (animationName) {
+    animateCss: function (animationName, duration) {
         var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+
+		var randomNum;
+
+		if (duration != null) {
+			
+			randomNum = Math.random().toString(36).substr(2);
+			
+			var durationClass = '<style type="text/css">' +
+								'.animation-duration-' + randomNum + ' {' +
+								'-webkit-animation-duration: ' + duration + 's;' +
+								'-moz-animation-duration: ' + duration + 's;' +
+								'-o-animation-duration: ' + duration + 's;' +
+								'animation-duration: ' + duration + 's;' +
+								'}</style>';
+			
+			durationClass = $(durationClass);
+			$('head').append(durationClass);
+			$(this).addClass('animation-duration-' + randomNum);
+		}
+
         $(this).addClass('animated ' + animationName).one(animationEnd, function() {
             $(this).removeClass('animated ' + animationName);
+			
+			if (duration != null) {
+				
+				$(this).removeClass('animation-duration-' + randomNum);
+				durationClass.remove();
+			}
         });
     }
 });
